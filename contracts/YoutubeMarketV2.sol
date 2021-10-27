@@ -4,8 +4,8 @@ pragma solidity 0.8.4;
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {IAddressRegistry} from "@devprotocol/protocol-v2/contracts/interface/IAddressRegistry.sol";
-import {IMarketBehavior} from "@devprotocol/protocol-l2/contracts/interface/IMarketBehavior.sol";
-import {IMarket} from "@devprotocol/protocol-l2/contracts/interface/IMarket.sol";
+import {IMarketBehavior} from "@devprotocol/protocol-v2/contracts/interface/IMarketBehavior.sol";
+import {IMarket} from "@devprotocol/protocol-v2/contracts/interface/IMarket.sol";
 
 contract YoutubeMarketV2 is
 	IMarketBehavior,
