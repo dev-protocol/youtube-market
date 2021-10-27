@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "hardhat test",
 		"pretest": "yarn generate",
-		"generate": "hardhat compile && waffle waffle-config.json",
+		"generate": "hardhat compile",
 		"pregenerate": "yarn clean",
 		"lint": "yarn lint:eslint && yarn lint:solhint && yarn lint:format",
 		"lint:eslint": "eslint . --ext .ts --fix",
@@ -14,8 +14,7 @@
 		"lint:format": "prettier --write '**/*.{sol,ts,json,md,yml}'",
 		"build": "tsc -p tsconfig.build.json",
 		"prebuild": "yarn generate",
-		"clean": "rimraf scripts/**/*.js build",
-		"build:waffle": "waffle waffle-config.json"
+		"clean": "rimraf scripts/**/*.js build"
 	},
 	"author": "",
 	"license": "MPL-2.0",
