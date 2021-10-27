@@ -52,6 +52,22 @@
     "@openzeppelin/contracts-upgradeable" "4.3.2"
     arb-ethers-web3-bridge "0.7.3"
 
+"@devprotocol/protocol-v2@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@devprotocol/protocol-v2/-/protocol-v2-0.5.0.tgz#5174ebb31fa13ffcd22d2fe39ebada56b3c4d858"
+  integrity sha512-HMdrQGGxhQjuht89V9pFFN0pcUazZG+VMUzQEO/IhyF39ojOKd4ij1yNQBGhua+Q4q86SMFKQ5+ansSMdBCaNA==
+  dependencies:
+    "@devprotocol/util-contracts" "3.3.0"
+    "@openzeppelin/contracts" "4.3.2"
+    "@openzeppelin/contracts-upgradeable" "4.3.2"
+
+"@devprotocol/protocol@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@devprotocol/protocol/-/protocol-3.4.0.tgz#df746e7b82d1aed18d51b146fea62b50e1a6bbc8"
+  integrity sha512-LRQrpT078PavgqxD584QWpALCr9BgX1abttGTOe0gUZsRnT5JSruxp6Bs4k5yfaAD3XRdkf/SR2+YLPwah0QYQ==
+  dependencies:
+    "@openzeppelin/contracts" "2.5.1"
+
 "@devprotocol/util-contracts@3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@devprotocol/util-contracts/-/util-contracts-3.3.0.tgz#56978e832f12b1796d937b20e57be307f2fcbc07"
@@ -619,6 +635,11 @@
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.3.2.tgz#92df481362e366c388fc02133cf793029c744cea"
   integrity sha512-i/pOaOtcqDk4UqsrOv735uYyTbn6dvfiuVu5hstsgV6c4ZKUtu88/31zT2BzkCg+3JfcwOfgg2TtRKVKKZIGkQ==
+
+"@openzeppelin/contracts@2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-2.5.1.tgz#c76e3fc57aa224da3718ec351812a4251289db31"
+  integrity sha512-qIy6tLx8rtybEsIOAlrM4J/85s2q2nPkDqj/Rx46VakBZ0LwtFhXIVub96LXHczQX0vaqmAueDqNPXtbSXSaYQ==
 
 "@openzeppelin/contracts@4.3.0":
   version "4.3.0"
