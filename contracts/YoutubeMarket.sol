@@ -10,14 +10,12 @@ contract YoutubeMarket is IMarketBehavior, Ownable, Pausable {
     address private khaos;
     address private associatedMarket;
     address private operator;
-    bool public priorApproval = true;
 
     mapping(address => string) private repositories;
     mapping(bytes32 => address) private metrics;
     mapping(bytes32 => address) private properties;
     mapping(bytes32 => address) private markets;
     mapping(bytes32 => bool) private pendingAuthentication;
-    mapping(string => bool) private publicSignatures;
     event Registered(address _metrics, string _repository);
     event Authenticated(string _repository, uint256 _status, string message);
     event Query(
@@ -47,12 +45,6 @@ contract YoutubeMarket is IMarketBehavior, Ownable, Pausable {
             "Invalid sender"
         );
 
-        if (priorApproval) {
-            require(
-                publicSignatures[_publicSignature],
-                "it has not been approved"
-            );
-        }
         bytes32 key = createKey(_githubRepository);
         emit Query(_githubRepository, _publicSignature, account);
         properties[key] = _prop;
@@ -113,18 +105,6 @@ contract YoutubeMarket is IMarketBehavior, Ownable, Pausable {
         returns (address)
     {
         return metrics[createKey(_repository)];
-    }
-
-    function setPriorApprovalMode(bool _value) external onlyOwner {
-        priorApproval = _value;
-    }
-
-    function addPublicSignaturee(string memory _publicSignature) external {
-        require(
-            msg.sender == owner() || msg.sender == operator,
-            "Invalid sender"
-        );
-        publicSignatures[_publicSignature] = true;
     }
 
     function setOperator(address _operator) external onlyOwner {

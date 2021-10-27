@@ -1,6 +1,6 @@
-import {expect, use} from "chai";
-import {Contract, ethers} from "ethers";
-import { deployContract, MockProvider, solidity} from "ethereum-waffle";
+import { expect, use } from "chai";
+import { Contract, ethers } from "ethers";
+import { deployContract, MockProvider, solidity } from "ethereum-waffle";
 import * as YoutubeMarket from "../build/YoutubeMarket.json";
 import * as MockMarket from "../build/MockMarket.json";
 import * as MockMetrics from "../build/MockMetrics.json";
@@ -36,31 +36,10 @@ describe("YoutubeMarket", () => {
       );
     });
   });
-  describe("addPublicSignaturee", () => {
-    describe("success", () => {
-      it("You can register a public key.", async () => {
-        await marketBehavior.setOperator(operator.address);
-        await marketBehavior.addPublicSignaturee("dummy-public-key1");
-        const marketBehaviorOperator = marketBehavior.connect(operator);
-        await marketBehaviorOperator.addPublicSignaturee("dummy-public-key2");
-        expect(true).to.be.equal(true);
-      });
-    });
-    describe("fail", () => {
-      it("If you are not configured as an operator, you cannot register a public key.", async () => {
-        const marketBehaviorOperator = marketBehavior.connect(operator);
-        await expect(
-          marketBehaviorOperator.addPublicSignaturee("dummy-public-key")
-        ).to.be.revertedWith("Invalid sender");
-      });
-    });
-  });
   describe("pause,unpause", () => {
     describe("success", () => {
       it("Non-authentication-related functions can be executed in the pause state.", async () => {
         await marketBehavior.pause();
-        await marketBehavior.setPriorApprovalMode(false);
-        await marketBehavior.addPublicSignaturee("dummy-sig");
         await marketBehavior.setOperator(operator.address);
         await marketBehavior.setKhaos(khaos.address);
         await marketBehavior.setAssociatedMarket(khaos.address);
@@ -69,11 +48,9 @@ describe("YoutubeMarket", () => {
         await marketBehavior.getMetrics("user/repo");
       });
       it("When the pause is released, the authentication function can be executed", async () => {
-        await marketBehavior.pause();
-        await marketBehavior.unpause();
-        await marketBehavior.setPriorApprovalMode(true);
-        await marketBehavior.setAssociatedMarket(wallet.address);
-        await marketBehavior.addPublicSignaturee("dummy-signature");
+        await marketBehavior.pause({ gasPrice: 2400000000 });
+        await marketBehavior.unpause({ gasPrice: 2400000000 });
+        await marketBehavior.setAssociatedMarket(wallet.address, { gasPrice: 2400000000 });
         await marketBehavior.authenticate(
           property1.address,
           "user/repository",
@@ -82,27 +59,26 @@ describe("YoutubeMarket", () => {
           "",
           "",
           market.address,
-          ethers.constants.AddressZero
+          ethers.constants.AddressZero,
+          { gasPrice: 2400000000 }
         );
         const marketBehaviorKhaos = marketBehavior.connect(khaos);
-        await marketBehavior.setKhaos(khaos.address);
+        await marketBehavior.setKhaos(khaos.address, { gasPrice: 2400000000 });
         await expect(
-          marketBehaviorKhaos.khaosCallback("user/repository", 0, "success")
+          marketBehaviorKhaos.khaosCallback("user/repository", 0, "success", { gasPrice: 2400000000 })
         )
           .to.emit(marketBehavior, "Authenticated")
           .withArgs("user/repository", 0, "success");
-        expect(await marketBehavior.getId(metrics.address)).to.equal(
+        expect(await marketBehavior.getId(metrics.address, { gasPrice: 2400000000 })).to.equal(
           "user/repository"
         );
-        expect(await marketBehavior.getMetrics("user/repository")).to.equal(
+        expect(await marketBehavior.getMetrics("user/repository", { gasPrice: 2400000000 })).to.equal(
           metrics.address
         );
       });
       it("Non-authentication-related functions will continue to execute after pause is released", async () => {
         await marketBehavior.pause();
         await marketBehavior.unpause();
-        await marketBehavior.setPriorApprovalMode(false);
-        await marketBehavior.addPublicSignaturee("dummy-sig");
         await marketBehavior.setOperator(operator.address);
         await marketBehavior.setKhaos(khaos.address);
         await marketBehavior.setAssociatedMarket(khaos.address);
@@ -120,7 +96,6 @@ describe("YoutubeMarket", () => {
       });
       it("Authentication is not possible during pause.", async () => {
         await marketBehavior.pause();
-        await marketBehavior.setPriorApprovalMode(false);
         await marketBehavior.setAssociatedMarket(wallet.address);
         await expect(
           marketBehavior.authenticate(
@@ -190,81 +165,7 @@ describe("YoutubeMarket", () => {
   });
   describe("authenticate", () => {
     describe("success", () => {
-      describe("prior approved mode", () => {
-        it("Query event data is created.", async () => {
-          await marketBehavior.setPriorApprovalMode(true);
-          await marketBehavior.setAssociatedMarket(wallet.address);
-          await marketBehavior.addPublicSignaturee("dummy-signature");
-          await expect(
-            marketBehavior.authenticate(
-              property1.address,
-              "user/repository",
-              "dummy-signature",
-              "",
-              "",
-              "",
-              market.address,
-              wallet.address
-            )
-          )
-            .to.emit(marketBehavior, "Query")
-            .withArgs("user/repository", "dummy-signature", wallet.address);
-        });
-        it("You can also authenticate with a public key set by the operator.", async () => {
-          await marketBehavior.setPriorApprovalMode(true);
-          await marketBehavior.setAssociatedMarket(wallet.address);
-          await marketBehavior.setOperator(operator.address);
-          const marketBehaviorOperator = marketBehavior.connect(operator);
-          await marketBehaviorOperator.addPublicSignaturee(
-            "dummy-signature-second",
-            {
-              gasLimit: 1000000,
-            }
-          );
-          await expect(
-            marketBehavior.authenticate(
-              property1.address,
-              "user/repository",
-              "dummy-signature-second",
-              "",
-              "",
-              "",
-              market.address,
-              wallet.address
-            )
-          )
-            .to.emit(marketBehavior, "Query")
-            .withArgs(
-              "user/repository",
-              "dummy-signature-second",
-              wallet.address
-            );
-        });
-      });
-      describe("not prior approved mode", () => {
-        it("Query event data is created.", async () => {
-          await marketBehavior.setPriorApprovalMode(false);
-          await marketBehavior.setAssociatedMarket(wallet.address);
-          await expect(
-            marketBehavior.authenticate(
-              property1.address,
-              "user/repository",
-              "dummy-signature",
-              "",
-              "",
-              "",
-              market.address,
-              wallet.address
-            )
-          )
-            .to.emit(marketBehavior, "Query")
-            .withArgs("user/repository", "dummy-signature", wallet.address);
-        });
-      });
-    });
-    describe("fail", () => {
-      it("Not prior approved when in prior approval mode.", async () => {
-        await marketBehavior.setPriorApprovalMode(true);
+      it("Query event data is created.", async () => {
         await marketBehavior.setAssociatedMarket(wallet.address);
         await expect(
           marketBehavior.authenticate(
@@ -275,12 +176,37 @@ describe("YoutubeMarket", () => {
             "",
             "",
             market.address,
-            ethers.constants.AddressZero
+            wallet.address
           )
-        ).to.be.revertedWith("it has not been approved");
+        )
+          .to.emit(marketBehavior, "Query")
+          .withArgs("user/repository", "dummy-signature", wallet.address);
       });
+      it("You can also authenticate with a public key set by the operator.", async () => {
+        await marketBehavior.setAssociatedMarket(wallet.address);
+        await marketBehavior.setOperator(operator.address);
+        await expect(
+          marketBehavior.authenticate(
+            property1.address,
+            "user/repository",
+            "dummy-signature-second",
+            "",
+            "",
+            "",
+            market.address,
+            wallet.address
+          )
+        )
+          .to.emit(marketBehavior, "Query")
+          .withArgs(
+            "user/repository",
+            "dummy-signature-second",
+            wallet.address
+          );
+      });
+    });
+    describe("fail", () => {
       it("Sender is not Associated-Market.", async () => {
-        await marketBehavior.setPriorApprovalMode(true);
         await marketBehavior.setAssociatedMarket(khaos.address);
         await expect(
           marketBehavior.authenticate(
@@ -300,9 +226,7 @@ describe("YoutubeMarket", () => {
   describe("khaosCallback", () => {
     describe("success", () => {
       it("The authentication is completed when the callback function is executed from khaos.", async () => {
-        await marketBehavior.setPriorApprovalMode(true);
         await marketBehavior.setAssociatedMarket(wallet.address);
-        await marketBehavior.addPublicSignaturee("dummy-signature");
         await marketBehavior.authenticate(
           property1.address,
           "user/repository",
@@ -342,9 +266,7 @@ describe("YoutubeMarket", () => {
         ).to.be.revertedWith("not while pending");
       });
       it("An error occurs during authentication.", async () => {
-        await marketBehavior.setPriorApprovalMode(true);
         await marketBehavior.setAssociatedMarket(wallet.address);
-        await marketBehavior.addPublicSignaturee("dummy-signature");
         await marketBehavior.authenticate(
           property1.address,
           "user/repository",
