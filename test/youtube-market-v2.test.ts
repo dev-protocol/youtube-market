@@ -169,9 +169,7 @@ const init3 = async (): Promise<[markets, string, string]> => {
 	])
 	await markets.marketFactory.setAssociatedMarket(associatedMarket.address)
 	const metrics = provider.createEmptyWallet()
-	const key = ethers.utils.keccak256(
-		ethers.utils.toUtf8Bytes('channel-id')
-	)
+	const key = ethers.utils.keccak256(ethers.utils.toUtf8Bytes('channel-id'))
 	await associatedMarket.mock.authenticatedCallback
 		.withArgs(property.address, key)
 		.returns(metrics.address)
@@ -385,11 +383,7 @@ describe('YouTubeMarketV2', () => {
 					)
 				)
 					.to.emit(markets.associatedMarket, 'Query')
-					.withArgs(
-						'channel-id',
-						'dummy-signature',
-						signers.user.address
-					)
+					.withArgs('channel-id', 'dummy-signature', signers.user.address)
 			})
 		})
 		describe('fail', () => {
