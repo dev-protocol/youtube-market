@@ -138,7 +138,7 @@ const init3 = async (): Promise<[markets, string, string]> => {
 	)
 	await markets.associatedMarket.authenticate(
 		property.address,
-		['youtube-channel-id', 'dummy-signature'],
+		['channel-id', 'dummy-signature'],
 		signers.user.address
 	)
 	const associatedMarket = await deployMockContract(signers.deployer, [
@@ -170,7 +170,7 @@ const init3 = async (): Promise<[markets, string, string]> => {
 	await markets.marketFactory.setAssociatedMarket(associatedMarket.address)
 	const metrics = provider.createEmptyWallet()
 	const key = ethers.utils.keccak256(
-		ethers.utils.toUtf8Bytes('youtube-channel-id')
+		ethers.utils.toUtf8Bytes('channel-id')
 	)
 	await associatedMarket.mock.authenticatedCallback
 		.withArgs(property.address, key)
@@ -380,13 +380,13 @@ describe('YouTubeMarketV2', () => {
 				await expect(
 					markets.associatedMarket.authenticate(
 						property.address,
-						['youtube-channel-id', 'dummy-signature'],
+						['channel-id', 'dummy-signature'],
 						signers.user.address
 					)
 				)
 					.to.emit(markets.associatedMarket, 'Query')
 					.withArgs(
-						'youtube-channel-id',
+						'channel-id',
 						'dummy-signature',
 						signers.user.address
 					)
@@ -400,7 +400,7 @@ describe('YouTubeMarketV2', () => {
 				await expect(
 					markets.associatedMarket.authenticate(
 						property.address,
-						['youtube-channel-id'],
+						['channel-id'],
 						signers.user.address
 					)
 				).to.be.revertedWith('args error')
@@ -413,7 +413,7 @@ describe('YouTubeMarketV2', () => {
 				await expect(
 					markets.associatedMarket.authenticate(
 						property.address,
-						['youtube-channel-id', 'dummy-signature'],
+						['channel-id', 'dummy-signature'],
 						signers.user.address
 					)
 				).to.be.revertedWith('Pausable: paused')
@@ -432,7 +432,7 @@ describe('YouTubeMarketV2', () => {
 					await expect(
 						market.authenticate(
 							property.address,
-							['youtube-channel-id', 'dummy-signature'],
+							['channel-id', 'dummy-signature'],
 							signers.user.address
 						)
 					).to.be.revertedWith('invalid sender')
@@ -458,35 +458,35 @@ describe('YouTubeMarketV2', () => {
 				const [markets] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await expect(market.khaosCallback('youtube-channel-id', 0, ''))
+					await expect(market.khaosCallback('channel-id', 0, ''))
 						.to.emit(market, 'Authenticated')
-						.withArgs('youtube-channel-id', '0', '')
+						.withArgs('channel-id', '0', '')
 				}
 			})
 			it('Registered event data is created.', async () => {
 				const [markets, , metrics] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await expect(market.khaosCallback('youtube-channel-id', 0, ''))
+					await expect(market.khaosCallback('channel-id', 0, ''))
 						.to.emit(market, 'Registered')
-						.withArgs(metrics, 'youtube-channel-id')
+						.withArgs(metrics, 'channel-id')
 				}
 			})
 			it('get id.', async () => {
 				const [markets, , metrics] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await market.khaosCallback('youtube-channel-id', 0, '')
+					await market.khaosCallback('channel-id', 0, '')
 					const id = await market.getId(metrics)
-					expect(id).to.be.equal('youtube-channel-id')
+					expect(id).to.be.equal('channel-id')
 				}
 			})
 			it('get metrics.', async () => {
 				const [markets, , metrics] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await market.khaosCallback('youtube-channel-id', 0, '')
-					const result = await market.getMetrics('youtube-channel-id')
+					await market.khaosCallback('channel-id', 0, '')
+					const result = await market.getMetrics('channel-id')
 					expect(result).to.be.equal(metrics)
 				}
 			})
@@ -497,7 +497,7 @@ describe('YouTubeMarketV2', () => {
 				const targetMarkets = getMarketsWithoutAdminAndKhaos(markets)
 				for (const market of targetMarkets) {
 					await expect(
-						market.khaosCallback('youtube-channel-id', 0, '')
+						market.khaosCallback('channel-id', 0, '')
 					).to.be.revertedWith('illegal access')
 				}
 			})
@@ -505,7 +505,7 @@ describe('YouTubeMarketV2', () => {
 				const [markets] = await init3()
 				const market = markets.deployer
 				await expect(
-					market.khaosCallback('youtube-channel-id', 1, 'error message')
+					market.khaosCallback('channel-id', 1, 'error message')
 				).to.be.revertedWith('error message')
 			})
 			it('not authenticate.', async () => {
@@ -516,7 +516,7 @@ describe('YouTubeMarketV2', () => {
 				)
 				const market = markets.deployer
 				await expect(
-					market.khaosCallback('youtube-channel-id', 0, '')
+					market.khaosCallback('channel-id', 0, '')
 				).to.be.revertedWith('not while pending')
 			})
 		})
