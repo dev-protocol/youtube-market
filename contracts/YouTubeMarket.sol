@@ -3,20 +3,19 @@ pragma solidity 0.8.4;
 
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {IAddressRegistry} from "@devprotocol/protocol-v2/contracts/interface/IAddressRegistry.sol";
-import {IMarketBehavior} from "@devprotocol/protocol-v2/contracts/interface/IMarketBehavior.sol";
-import {IMarket} from "@devprotocol/protocol-v2/contracts/interface/IMarket.sol";
+import {IMarketBehavior} from "@devprotocol/protocol/contracts/interface/IMarketBehavior.sol";
+import {IMarket} from "@devprotocol/protocol/contracts/interface/IMarket.sol";
 
-contract YoutubeMarketV2 is
+contract YouTubeMarket is
 	IMarketBehavior,
 	PausableUpgradeable,
 	AccessControlUpgradeable
 {
-	address public registry;
-	address public override associatedMarket;
+	address public associatedMarket;
 	mapping(address => string) private repositories;
 	mapping(bytes32 => address) private metrics;
 	mapping(bytes32 => address) private properties;
+    mapping(bytes32 => address) private markets;
 	mapping(bytes32 => bool) private pendingAuthentication;
 
 	// ROLE
@@ -27,15 +26,14 @@ contract YoutubeMarketV2 is
 	event Registered(address _metrics, string _repository);
 	event Authenticated(string _repository, uint256 _status, string message);
 	event Query(
-		string githubRepository,
+		string youtubeChannel,
 		string publicSignature,
 		address account
 	);
 
-	function initialize(address _registry) external initializer {
+	function initialize() external initializer {
 		__AccessControl_init();
 		__Pausable_init();
-		registry = _registry;
 		_setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
 		_setRoleAdmin(OPERATOR_ROLE, DEFAULT_ADMIN_ROLE);
 		_setupRole(OPERATOR_ROLE, _msgSender());
@@ -44,29 +42,35 @@ contract YoutubeMarketV2 is
 	}
 
 	/*
-    _githubRepository: ex)
-                        personal repository: Akira-Taniguchi/cloud_lib
-                        organization repository: dev-protocol/protocol
+    _youtubeChannel: ex)
+                        YouTube channel id: UCN7m74tFgJJnoGL4zk6aJ6g
     _publicSignature: signature string(created by Khaos)
     */
-	function authenticate(
-		address _prop,
-		string[] memory _args,
-		address account
-	) external override whenNotPaused returns (bool) {
-		require(msg.sender == associatedMarket, "invalid sender");
-		require(_args.length == 2, "args error");
-		string memory githubRepository = _args[0];
-		string memory publicSignature = _args[1];
-		bytes32 key = createKey(githubRepository);
-		emit Query(githubRepository, publicSignature, account);
-		properties[key] = _prop;
-		pendingAuthentication[key] = true;
-		return true;
-	}
+	    function authenticate(
+        address _prop,
+        string memory _youtubeChannel,
+        string memory _publicSignature,
+        string memory,
+        string memory,
+        string memory,
+        address _dest,
+        address account
+    ) external override whenNotPaused returns (bool) {
+        require(
+            msg.sender == address(0) || msg.sender == associatedMarket,
+            "invalid sender"
+        );
+
+        bytes32 key = createKey(_youtubeChannel);
+        emit Query(_youtubeChannel, _publicSignature, account);
+        properties[key] = _prop;
+        markets[key] = _dest;
+        pendingAuthentication[key] = true;
+        return true;
+    }
 
 	function khaosCallback(
-		string memory _githubRepository,
+		string memory _youtubeChannel,
 		uint256 _status,
 		string memory _message
 	) external whenNotPaused {
@@ -76,10 +80,10 @@ contract YoutubeMarketV2 is
 			"illegal access"
 		);
 		require(_status == 0, _message);
-		bytes32 key = createKey(_githubRepository);
+		bytes32 key = createKey(_youtubeChannel);
 		require(pendingAuthentication[key], "not while pending");
-		emit Authenticated(_githubRepository, _status, _message);
-		register(key, _githubRepository, properties[key]);
+		emit Authenticated(_youtubeChannel, _status, _message);
+		register(key, _youtubeChannel, properties[key]);
 	}
 
 	function register(
@@ -150,22 +154,18 @@ contract YoutubeMarketV2 is
 		revokeRole(KHAOS_ROLE, _khaos);
 	}
 
-	function setAssociatedMarket(address _associatedMarket) external override {
-		address marketFactory = IAddressRegistry(registry).registries(
-			"MarketFactory"
-		);
-		require(marketFactory == msg.sender, "illegal sender");
+	function setAssociatedMarket(address _associatedMarket) external onlyRole(DEFAULT_ADMIN_ROLE) {
 		associatedMarket = _associatedMarket;
 	}
 
-	function name() external pure override returns (string memory) {
-		return "GitHub";
+	function name() external pure returns (string memory) {
+		return "YouTube";
 	}
 
 	function schema() external pure override returns (string memory) {
 		return
 			// solhint-disable-next-line quotes
-			'["GitHub Repository (e.g, your/awesome-repos)", "Khaos Public Signature"]';
+			'["YouTube Channel (e.g, UCN7m74tFgJJnoGL4zk6aJ6g)", "Khaos Public Signature"]';
 	}
 
 	function pause() external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused {

@@ -8,10 +8,10 @@ import { constants } from 'ethers'
 import { ethers, waffle } from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { solidity } from 'ethereum-waffle'
-import YoutubeMarketV2Artifact from '../artifacts/contracts/YoutubeMarketV2.sol/YoutubeMarketV2.json'
+import YouTubeMarketV2Artifact from '../artifacts/contracts/YouTubeMarketV2.sol/YouTubeMarketV2.json'
 import MarketAdminArtifact from '../artifacts/contracts/MarketAdmin.sol/MarketAdmin.json'
 import MarketProxyArtifact from '../artifacts/contracts/MarketProxy.sol/MarketProxy.json'
-import { YoutubeMarketV2 } from '../src/types/YoutubeMarketV2'
+import { YouTubeMarketV2 } from '../src/types/YouTubeMarketV2'
 import { MarketAdmin } from '../src/types/MarketAdmin'
 import { MarketProxy } from '../src/types/MarketProxy'
 
@@ -29,12 +29,12 @@ type signers = {
 }
 
 type markets = {
-	deployer: YoutubeMarketV2
-	operator: YoutubeMarketV2
-	khaos: YoutubeMarketV2
-	user: YoutubeMarketV2
-	marketFactory: YoutubeMarketV2
-	associatedMarket: YoutubeMarketV2
+	deployer: YouTubeMarketV2
+	operator: YouTubeMarketV2
+	khaos: YouTubeMarketV2
+	user: YouTubeMarketV2
+	marketFactory: YouTubeMarketV2
+	associatedMarket: YouTubeMarketV2
 }
 
 const getSigners = async (): Promise<signers> => {
@@ -50,7 +50,7 @@ const getSigners = async (): Promise<signers> => {
 	}
 }
 
-const getMarketsWithoutAdmin = (markets: markets): YoutubeMarketV2[] => [
+const getMarketsWithoutAdmin = (markets: markets): YouTubeMarketV2[] => [
 	markets.operator,
 	markets.khaos,
 	markets.user,
@@ -62,8 +62,8 @@ const init = async (): Promise<markets> => {
 	const signers = await getSigners()
 	const marketBehavior = (await deployContract(
 		signers.deployer,
-		YoutubeMarketV2Artifact
-	)) as YoutubeMarketV2
+		YouTubeMarketV2Artifact
+	)) as YouTubeMarketV2
 	const admin = (await deployContract(
 		signers.deployer,
 		MarketAdminArtifact
@@ -74,12 +74,12 @@ const init = async (): Promise<markets> => {
 		admin.address,
 		data,
 	])) as MarketProxy
-	const YoutubeMarketParentFactory = await ethers.getContractFactory(
-		YoutubeMarketV2Artifact.abi,
-		YoutubeMarketV2Artifact.bytecode,
+	const YouTubeMarketParentFactory = await ethers.getContractFactory(
+		YouTubeMarketV2Artifact.abi,
+		YouTubeMarketV2Artifact.bytecode,
 		signers.deployer
 	)
-	const proxyMarket = YoutubeMarketParentFactory.attach(proxy.address) as YoutubeMarketV2
+	const proxyMarket = YouTubeMarketParentFactory.attach(proxy.address) as YouTubeMarketV2
 	const reg = await deployMockContract(signers.deployer, [
 		{
 			inputs: [
@@ -136,7 +136,7 @@ const init3 = async (): Promise<[markets, string, string]> => {
 	)
 	await markets.associatedMarket.authenticate(
 		property.address,
-		['user/repository', 'dummy-signature'],
+		['youtube-channel-id', 'dummy-signature'],
 		signers.user.address
 	)
 	const associatedMarket = await deployMockContract(signers.deployer, [
@@ -168,7 +168,7 @@ const init3 = async (): Promise<[markets, string, string]> => {
 	await markets.marketFactory.setAssociatedMarket(associatedMarket.address)
 	const metrics = provider.createEmptyWallet()
 	const key = ethers.utils.keccak256(
-		ethers.utils.toUtf8Bytes('user/repository')
+		ethers.utils.toUtf8Bytes('youtube-channel-id')
 	)
 	await associatedMarket.mock.authenticatedCallback
 		.withArgs(property.address, key)
@@ -176,7 +176,7 @@ const init3 = async (): Promise<[markets, string, string]> => {
 	return [markets, property.address, metrics.address]
 }
 
-describe('YoutubeMarketV2', () => {
+describe('YouTubeMarketV2', () => {
 	describe('initialize', () => {
 		describe('success', () => {
 			it('set initial value.', async () => {
@@ -197,7 +197,7 @@ describe('YoutubeMarketV2', () => {
 	describe('name', () => {
 		it("Returns this market's name.", async () => {
 			const market = (await init()).deployer
-			expect(await market.name()).to.equal('GitHub')
+			expect(await market.name()).to.equal('YouTube')
 		})
 	})
 
@@ -205,7 +205,7 @@ describe('YoutubeMarketV2', () => {
 		it("Returns this market's schema.", async () => {
 			const market = (await init()).deployer
 			expect(await market.schema()).to.equal(
-				'["GitHub Repository (e.g, your/awesome-repos)", "Khaos Public Signature"]'
+				'["YouTube Channel (e.g, UCN7m74tFgJJnoGL4zk6aJ6g)", "Khaos Public Signature"]'
 			)
 		})
 	})
@@ -378,12 +378,12 @@ describe('YoutubeMarketV2', () => {
 				await expect(
 					markets.associatedMarket.authenticate(
 						property.address,
-						['user/repository', 'dummy-signature'],
+						['youtube-channel-id', 'dummy-signature'],
 						signers.user.address
 					)
 				)
 					.to.emit(markets.associatedMarket, 'Query')
-					.withArgs('user/repository', 'dummy-signature', signers.user.address)
+					.withArgs('youtube-channel-id', 'dummy-signature', signers.user.address)
 			})
 		})
 		describe('fail', () => {
@@ -394,7 +394,7 @@ describe('YoutubeMarketV2', () => {
 				await expect(
 					markets.associatedMarket.authenticate(
 						property.address,
-						['user/repository'],
+						['youtube-channel-id'],
 						signers.user.address
 					)
 				).to.be.revertedWith('args error')
@@ -407,7 +407,7 @@ describe('YoutubeMarketV2', () => {
 				await expect(
 					markets.associatedMarket.authenticate(
 						property.address,
-						['user/repository', 'dummy-signature'],
+						['youtube-channel-id', 'dummy-signature'],
 						signers.user.address
 					)
 				).to.be.revertedWith('Pausable: paused')
@@ -426,7 +426,7 @@ describe('YoutubeMarketV2', () => {
 					await expect(
 						market.authenticate(
 							property.address,
-							['user/repository', 'dummy-signature'],
+							['youtube-channel-id', 'dummy-signature'],
 							signers.user.address
 						)
 					).to.be.revertedWith('invalid sender')
@@ -437,13 +437,13 @@ describe('YoutubeMarketV2', () => {
 	describe('khaosCallback', () => {
 		const getMarketsWithoutAdminAndKhaos = (
 			markets: markets
-		): YoutubeMarketV2[] => [
-			markets.operator,
-			markets.user,
-			markets.marketFactory,
-			markets.associatedMarket,
-		]
-		const getAdminAndKhaosMarkets = (markets: markets): YoutubeMarketV2[] => [
+		): YouTubeMarketV2[] => [
+				markets.operator,
+				markets.user,
+				markets.marketFactory,
+				markets.associatedMarket,
+			]
+		const getAdminAndKhaosMarkets = (markets: markets): YouTubeMarketV2[] => [
 			markets.deployer,
 			markets.khaos,
 		]
@@ -452,35 +452,35 @@ describe('YoutubeMarketV2', () => {
 				const [markets] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await expect(market.khaosCallback('user/repository', 0, ''))
+					await expect(market.khaosCallback('youtube-channel-id', 0, ''))
 						.to.emit(market, 'Authenticated')
-						.withArgs('user/repository', '0', '')
+						.withArgs('youtube-channel-id', '0', '')
 				}
 			})
 			it('Registered event data is created.', async () => {
 				const [markets, , metrics] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await expect(market.khaosCallback('user/repository', 0, ''))
+					await expect(market.khaosCallback('youtube-channel-id', 0, ''))
 						.to.emit(market, 'Registered')
-						.withArgs(metrics, 'user/repository')
+						.withArgs(metrics, 'youtube-channel-id')
 				}
 			})
 			it('get id.', async () => {
 				const [markets, , metrics] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await market.khaosCallback('user/repository', 0, '')
+					await market.khaosCallback('youtube-channel-id', 0, '')
 					const id = await market.getId(metrics)
-					expect(id).to.be.equal('user/repository')
+					expect(id).to.be.equal('youtube-channel-id')
 				}
 			})
 			it('get metrics.', async () => {
 				const [markets, , metrics] = await init3()
 				const targetMarkets = getAdminAndKhaosMarkets(markets)
 				for (const market of targetMarkets) {
-					await market.khaosCallback('user/repository', 0, '')
-					const result = await market.getMetrics('user/repository')
+					await market.khaosCallback('youtube-channel-id', 0, '')
+					const result = await market.getMetrics('youtube-channel-id')
 					expect(result).to.be.equal(metrics)
 				}
 			})
@@ -491,7 +491,7 @@ describe('YoutubeMarketV2', () => {
 				const targetMarkets = getMarketsWithoutAdminAndKhaos(markets)
 				for (const market of targetMarkets) {
 					await expect(
-						market.khaosCallback('user/repository', 0, '')
+						market.khaosCallback('youtube-channel-id', 0, '')
 					).to.be.revertedWith('illegal access')
 				}
 			})
@@ -499,7 +499,7 @@ describe('YoutubeMarketV2', () => {
 				const [markets] = await init3()
 				const market = markets.deployer
 				await expect(
-					market.khaosCallback('user/repository', 1, 'error message')
+					market.khaosCallback('youtube-channel-id', 1, 'error message')
 				).to.be.revertedWith('error message')
 			})
 			it('not authenticate.', async () => {
@@ -510,7 +510,7 @@ describe('YoutubeMarketV2', () => {
 				)
 				const market = markets.deployer
 				await expect(
-					market.khaosCallback('user/repository', 0, '')
+					market.khaosCallback('youtube-channel-id', 0, '')
 				).to.be.revertedWith('not while pending')
 			})
 		})
