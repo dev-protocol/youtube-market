@@ -6,5 +6,9 @@ import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
 
 module.exports = {
-	solidity: '0.8.7',
+	solidity: '0.8.4',
+	typechain: {
+		outDir: 'src/types',
+		target: 'ethers-v5',
+	},
 }

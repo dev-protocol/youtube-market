@@ -72,7 +72,7 @@ types
 # use yarn
 package-lock.json
 
-# outout of hardhat
-artifacts
-cache
-typechain
+
+artifacts/
+cache/
+typechain/
