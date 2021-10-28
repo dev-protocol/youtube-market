@@ -26,11 +26,7 @@ contract YouTubeMarketV2 is
 	// event
 	event Registered(address _metrics, string _repository);
 	event Authenticated(string _repository, uint256 _status, string message);
-	event Query(
-		string youtubeChannel,
-		string publicSignature,
-		address account
-	);
+	event Query(string youtubeChannel, string publicSignature, address account);
 
 	function initialize(address _registry) external initializer {
 		__AccessControl_init();

@@ -15,7 +15,7 @@ contract YouTubeMarket is
 	mapping(address => string) private repositories;
 	mapping(bytes32 => address) private metrics;
 	mapping(bytes32 => address) private properties;
-    mapping(bytes32 => address) private markets;
+	mapping(bytes32 => address) private markets;
 	mapping(bytes32 => bool) private pendingAuthentication;
 
 	// ROLE
@@ -25,11 +25,7 @@ contract YouTubeMarket is
 	// event
 	event Registered(address _metrics, string _repository);
 	event Authenticated(string _repository, uint256 _status, string message);
-	event Query(
-		string youtubeChannel,
-		string publicSignature,
-		address account
-	);
+	event Query(string youtubeChannel, string publicSignature, address account);
 
 	function initialize() external initializer {
 		__AccessControl_init();
@@ -46,28 +42,28 @@ contract YouTubeMarket is
                         YouTube channel id: UCN7m74tFgJJnoGL4zk6aJ6g
     _publicSignature: signature string(created by Khaos)
     */
-	    function authenticate(
-        address _prop,
-        string memory _youtubeChannel,
-        string memory _publicSignature,
-        string memory,
-        string memory,
-        string memory,
-        address _dest,
-        address account
-    ) external override whenNotPaused returns (bool) {
-        require(
-            msg.sender == address(0) || msg.sender == associatedMarket,
-            "invalid sender"
-        );
+	function authenticate(
+		address _prop,
+		string memory _youtubeChannel,
+		string memory _publicSignature,
+		string memory,
+		string memory,
+		string memory,
+		address _dest,
+		address account
+	) external override whenNotPaused returns (bool) {
+		require(
+			msg.sender == address(0) || msg.sender == associatedMarket,
+			"invalid sender"
+		);
 
-        bytes32 key = createKey(_youtubeChannel);
-        emit Query(_youtubeChannel, _publicSignature, account);
-        properties[key] = _prop;
-        markets[key] = _dest;
-        pendingAuthentication[key] = true;
-        return true;
-    }
+		bytes32 key = createKey(_youtubeChannel);
+		emit Query(_youtubeChannel, _publicSignature, account);
+		properties[key] = _prop;
+		markets[key] = _dest;
+		pendingAuthentication[key] = true;
+		return true;
+	}
 
 	function khaosCallback(
 		string memory _youtubeChannel,
@@ -154,7 +150,10 @@ contract YouTubeMarket is
 		revokeRole(KHAOS_ROLE, _khaos);
 	}
 
-	function setAssociatedMarket(address _associatedMarket) external onlyRole(DEFAULT_ADMIN_ROLE) {
+	function setAssociatedMarket(address _associatedMarket)
+		external
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
 		associatedMarket = _associatedMarket;
 	}
 

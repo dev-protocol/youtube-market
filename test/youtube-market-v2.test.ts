@@ -79,7 +79,9 @@ const init = async (): Promise<markets> => {
 		YouTubeMarketV2Artifact.bytecode,
 		signers.deployer
 	)
-	const proxyMarket = YouTubeMarketParentFactory.attach(proxy.address) as YouTubeMarketV2
+	const proxyMarket = YouTubeMarketParentFactory.attach(
+		proxy.address
+	) as YouTubeMarketV2
 	const reg = await deployMockContract(signers.deployer, [
 		{
 			inputs: [
@@ -383,7 +385,11 @@ describe('YouTubeMarketV2', () => {
 					)
 				)
 					.to.emit(markets.associatedMarket, 'Query')
-					.withArgs('youtube-channel-id', 'dummy-signature', signers.user.address)
+					.withArgs(
+						'youtube-channel-id',
+						'dummy-signature',
+						signers.user.address
+					)
 			})
 		})
 		describe('fail', () => {
@@ -438,11 +444,11 @@ describe('YouTubeMarketV2', () => {
 		const getMarketsWithoutAdminAndKhaos = (
 			markets: markets
 		): YouTubeMarketV2[] => [
-				markets.operator,
-				markets.user,
-				markets.marketFactory,
-				markets.associatedMarket,
-			]
+			markets.operator,
+			markets.user,
+			markets.marketFactory,
+			markets.associatedMarket,
+		]
 		const getAdminAndKhaosMarkets = (markets: markets): YouTubeMarketV2[] => [
 			markets.deployer,
 			markets.khaos,
