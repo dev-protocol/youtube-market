@@ -21,7 +21,6 @@ const { deployContract, deployMockContract, provider } = waffle
 
 type signers = {
 	deployer: SignerWithAddress
-	operator: SignerWithAddress
 	khaos: SignerWithAddress
 	user: SignerWithAddress
 	marketFactory: SignerWithAddress
@@ -30,7 +29,6 @@ type signers = {
 
 type markets = {
 	deployer: YouTubeMarketV2
-	operator: YouTubeMarketV2
 	khaos: YouTubeMarketV2
 	user: YouTubeMarketV2
 	marketFactory: YouTubeMarketV2
@@ -38,11 +36,10 @@ type markets = {
 }
 
 const getSigners = async (): Promise<signers> => {
-	const [deployer, operator, khaos, user, marketFactory, associatedMarket] =
+	const [deployer, khaos, user, marketFactory, associatedMarket] =
 		await ethers.getSigners()
 	return {
 		deployer,
-		operator,
 		khaos,
 		user,
 		marketFactory,
@@ -51,7 +48,6 @@ const getSigners = async (): Promise<signers> => {
 }
 
 const getMarketsWithoutAdmin = (markets: markets): YouTubeMarketV2[] => [
-	markets.operator,
 	markets.khaos,
 	markets.user,
 	markets.marketFactory,
@@ -108,11 +104,9 @@ const init = async (): Promise<markets> => {
 		.returns(signers.marketFactory.address)
 	// Await reg.setRegistry('MarketFactory', signers.marketFactory.address)
 	await proxyMarket.initialize(reg.address)
-	await proxyMarket.addOperatorRole(signers.operator.address)
 	await proxyMarket.addKhaosRole(signers.khaos.address)
 	return {
 		deployer: proxyMarket,
-		operator: proxyMarket.connect(signers.operator),
 		khaos: proxyMarket.connect(signers.khaos),
 		user: proxyMarket.connect(signers.user),
 		marketFactory: proxyMarket.connect(signers.marketFactory),
@@ -291,52 +285,6 @@ describe('YouTubeMarketV2', () => {
 			})
 		})
 	})
-	describe('addOperatorRole, deleteOperatorRole', () => {
-		describe('success', () => {
-			it('add operator role.', async () => {
-				const market = (await init()).deployer
-				const signers = await getSigners()
-				const role = await market.OPERATOR_ROLE()
-				expect(await market.hasRole(role, signers.user.address)).to.be.equal(
-					false
-				)
-				await market.addOperatorRole(signers.user.address)
-				expect(await market.hasRole(role, signers.user.address)).to.be.equal(
-					true
-				)
-			})
-			it('delete operator role.', async () => {
-				const market = (await init()).deployer
-				const signers = await getSigners()
-				const role = await market.OPERATOR_ROLE()
-				expect(
-					await market.hasRole(role, signers.operator.address)
-				).to.be.equal(true)
-				await market.deleteOperatorRole(signers.operator.address)
-				expect(
-					await market.hasRole(role, signers.operator.address)
-				).to.be.equal(false)
-			})
-		})
-		describe('fail', () => {
-			it('non Admin can not add operator role.', async () => {
-				const markets = getMarketsWithoutAdmin(await init())
-				const signers = await getSigners()
-				for (const market of markets) {
-					await expect(market.addOperatorRole(signers.user.address)).to.be
-						.reverted
-				}
-			})
-			it('non Admin can not delete operator role.', async () => {
-				const markets = getMarketsWithoutAdmin(await init())
-				const signers = await getSigners()
-				for (const market of markets) {
-					await expect(market.deleteOperatorRole(signers.operator.address)).to
-						.be.reverted
-				}
-			})
-		})
-	})
 	describe('setAssociatedMarket', () => {
 		describe('success', () => {
 			it('set associated market.', async () => {
@@ -356,7 +304,6 @@ describe('YouTubeMarketV2', () => {
 				const signers = await getSigners()
 				for (const market of [
 					markets.deployer,
-					markets.operator,
 					markets.khaos,
 					markets.user,
 					markets.associatedMarket,
@@ -418,7 +365,6 @@ describe('YouTubeMarketV2', () => {
 				const signers = await getSigners()
 				for (const market of [
 					markets.deployer,
-					markets.operator,
 					markets.khaos,
 					markets.user,
 					markets.marketFactory,
@@ -438,7 +384,6 @@ describe('YouTubeMarketV2', () => {
 		const getMarketsWithoutAdminAndKhaos = (
 			markets: markets
 		): YouTubeMarketV2[] => [
-			markets.operator,
 			markets.user,
 			markets.marketFactory,
 			markets.associatedMarket,

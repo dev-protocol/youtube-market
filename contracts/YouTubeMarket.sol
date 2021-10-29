@@ -19,7 +19,6 @@ contract YouTubeMarket is
 	mapping(bytes32 => bool) private pendingAuthentication;
 
 	// ROLE
-	bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 	bytes32 public constant KHAOS_ROLE = keccak256("KHAOS_ROLE");
 
 	// event
@@ -31,8 +30,6 @@ contract YouTubeMarket is
 		__AccessControl_init();
 		__Pausable_init();
 		_setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-		_setRoleAdmin(OPERATOR_ROLE, DEFAULT_ADMIN_ROLE);
-		_setupRole(OPERATOR_ROLE, _msgSender());
 		_setRoleAdmin(KHAOS_ROLE, DEFAULT_ADMIN_ROLE);
 		_setupRole(KHAOS_ROLE, _msgSender());
 	}
@@ -120,20 +117,6 @@ contract YouTubeMarket is
 		returns (address)
 	{
 		return metrics[createKey(_repository)];
-	}
-
-	function addOperatorRole(address _operator)
-		external
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		_setupRole(OPERATOR_ROLE, _operator);
-	}
-
-	function deleteOperatorRole(address _operator)
-		external
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		revokeRole(OPERATOR_ROLE, _operator);
 	}
 
 	function addKhaosRole(address _khaos)
