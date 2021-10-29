@@ -3,7 +3,6 @@ pragma solidity 0.8.4;
 
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {IAddressRegistry} from "@devprotocol/protocol-v2/contracts/interface/IAddressRegistry.sol";
 import {IMarketBehavior} from "@devprotocol/protocol-v2/contracts/interface/IMarketBehavior.sol";
 import {IMarket} from "@devprotocol/protocol-v2/contracts/interface/IMarket.sol";
 
@@ -12,8 +11,8 @@ contract YouTubeMarketV2 is
 	PausableUpgradeable,
 	AccessControlUpgradeable
 {
-	address public registry;
 	address public override associatedMarket;
+	address public associatedMarketSetter;
 	mapping(address => string) private repositories;
 	mapping(bytes32 => address) private metrics;
 	mapping(bytes32 => address) private properties;
@@ -27,10 +26,9 @@ contract YouTubeMarketV2 is
 	event Authenticated(string _repository, uint256 _status, string message);
 	event Query(string youtubeChannel, string publicSignature, address account);
 
-	function initialize(address _registry) external initializer {
+	function initialize() external initializer {
 		__AccessControl_init();
 		__Pausable_init();
-		registry = _registry;
 		_setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
 		_setRoleAdmin(KHAOS_ROLE, DEFAULT_ADMIN_ROLE);
 		_setupRole(KHAOS_ROLE, _msgSender());
@@ -129,11 +127,16 @@ contract YouTubeMarketV2 is
 	}
 
 	function setAssociatedMarket(address _associatedMarket) external override {
-		address marketFactory = IAddressRegistry(registry).registries(
-			"MarketFactory"
-		);
-		require(marketFactory == msg.sender, "illegal sender");
-		associatedMarket = _associatedMarket;
+		if (associatedMarket == address(0)) {
+			associatedMarket = _associatedMarket;
+			associatedMarketSetter = msg.sender;
+			return;
+		}
+		if (associatedMarketSetter == msg.sender) {
+			associatedMarket = _associatedMarket;
+			return;
+		}
+		revert("illegal access");
 	}
 
 	function name() external pure override returns (string memory) {

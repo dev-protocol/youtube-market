@@ -11,9 +11,7 @@ import { solidity } from 'ethereum-waffle'
 import YouTubeMarketArtifact from '../artifacts/contracts/YouTubeMarket.sol/YouTubeMarket.json'
 import MarketAdminArtifact from '../artifacts/contracts/MarketAdmin.sol/MarketAdmin.json'
 import MarketProxyArtifact from '../artifacts/contracts/MarketProxy.sol/MarketProxy.json'
-import { YouTubeMarket } from '../src/types/YouTubeMarket'
-import { MarketAdmin } from '../src/types/MarketAdmin'
-import { MarketProxy } from '../src/types/MarketProxy'
+import { YouTubeMarket, MarketAdmin, MarketProxy } from '../typechain'
 
 use(solidity)
 
