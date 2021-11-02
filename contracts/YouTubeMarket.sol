@@ -50,7 +50,7 @@ contract YouTubeMarket is
 		address account
 	) external override whenNotPaused returns (bool) {
 		require(
-			msg.sender == address(0) || msg.sender == associatedMarket,
+			msg.sender == associatedMarket,
 			"invalid sender"
 		);
 
