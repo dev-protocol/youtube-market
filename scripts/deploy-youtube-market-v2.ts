@@ -8,7 +8,9 @@ async function main() {
 	//!!!!!!!!!!!!!!!!!!!!!!
 
 	// YouTubeMarketV2
-	const youTubeMarketV2Factory = await ethers.getContractFactory('YouTubeMarketV2')
+	const youTubeMarketV2Factory = await ethers.getContractFactory(
+		'YouTubeMarketV2'
+	)
 	const youTubeMarketV2 = await youTubeMarketV2Factory.deploy()
 	await youTubeMarketV2.deployed()
 
