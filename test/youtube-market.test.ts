@@ -377,30 +377,6 @@ describe('YouTubeMarket', () => {
 					)
 				).to.be.revertedWith('Pausable: paused')
 			})
-			it('Cannot be run from outside the associate market.', async () => {
-				const [markets, marketMock] = await init2()
-				const property = provider.createEmptyWallet()
-				const signers = await getSigners()
-				for (const market of [
-					markets.deployer,
-					markets.khaos,
-					markets.user,
-					markets.marketFactory,
-				]) {
-					await expect(
-						market.authenticate(
-							property.address,
-							'youtube-channel-id',
-							'dummy-signature',
-							'',
-							'',
-							'',
-							marketMock.address,
-							signers.user.address
-						)
-					).to.be.revertedWith('invalid sender')
-				}
-			})
 		})
 	})
 	describe('khaosCallback', () => {
