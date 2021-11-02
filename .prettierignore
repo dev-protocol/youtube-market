@@ -1,6 +1,2 @@
-artifacts
-cache
-typechain
-artifacts/
-typechain/
-cache/
+build
+contracts/modules
