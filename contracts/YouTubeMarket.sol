@@ -49,6 +49,10 @@ contract YouTubeMarket is
 		address _dest,
 		address account
 	) external override whenNotPaused returns (bool) {
+		require(
+			msg.sender == address(0) || msg.sender == associatedMarket,
+			"invalid sender"
+		);
 
 		bytes32 key = createKey(_youtubeChannel);
 		emit Query(_youtubeChannel, _publicSignature, account);
