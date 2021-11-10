@@ -27,6 +27,7 @@ async function main() {
 
 	const proxy = youTubeMarketV2Factory.attach(marketProxy.address)
 	await proxy.initialize()
+	await proxy.addKhaosRole(proxy.address)
 
 	console.log('youtube market deployed to:', youTubeMarketV2.address)
 	console.log('market proxy deployed to:', marketProxy.address)
