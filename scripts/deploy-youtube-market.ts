@@ -5,6 +5,7 @@ import { ethers } from 'hardhat'
 async function main() {
 	//!please check!!!!!!!!!
 	const adminAddress = ''
+	const khaosWallet = ''
 	//!!!!!!!!!!!!!!!!!!!!!!
 
 	// YouTubeMarket
@@ -25,7 +26,7 @@ async function main() {
 
 	const proxy = youTubeMarketFactory.attach(marketProxy.address)
 	await proxy.initialize()
-	await proxy.addKhaosRole(proxy.address)
+	await proxy.addKhaosRole(khaosWallet)
 
 	console.log('youtube market deployed to:', youTubeMarket.address)
 	console.log('market proxy deployed to:', marketProxy.address)
