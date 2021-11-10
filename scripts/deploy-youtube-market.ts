@@ -30,6 +30,7 @@ async function main() {
 
 	console.log('youtube market deployed to:', youTubeMarket.address)
 	console.log('market proxy deployed to:', marketProxy.address)
+	console.log('market proxy khaosRole is attached to:', khaosWallet)
 }
 
 main()

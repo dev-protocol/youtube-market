@@ -32,6 +32,7 @@ async function main() {
 
 	console.log('youtube market v2 deployed to:', youTubeMarketV2.address)
 	console.log('market v2 proxy deployed to:', marketProxy.address)
+	console.log('market proxy v2 khaosRole is attached to:', khaosWallet)
 }
 
 main()
