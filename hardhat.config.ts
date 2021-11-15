@@ -21,6 +21,13 @@ const config: HardhatUserConfig = {
 		},
 	},
 	networks: {
+		ropsten: {
+			url: `https://ropsten.infura.io/v3/${process.env.INFURA_KEY!}`,
+			gas: 4712388,
+			accounts: {
+				mnemonic: mnemnoc,
+			},
+		},
 		arbitrumRinkeby: {
 			url: `https://arbitrum-rinkeby.infura.io/v3/${process.env.INFURA_KEY!}`,
 			accounts: {
