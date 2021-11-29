@@ -7,7 +7,7 @@ import { expect, use } from 'chai'
 import { Contract } from 'ethers'
 import { ethers, waffle } from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
-import { solidity } from 'ethereum-waffle'
+import { MockContract, solidity } from 'ethereum-waffle'
 import YouTubeMarketArtifact from '../artifacts/contracts/YouTubeMarket.sol/YouTubeMarket.json'
 import MarketAdminArtifact from '../artifacts/contracts/MarketAdmin.sol/MarketAdmin.json'
 import MarketProxyArtifact from '../artifacts/contracts/MarketProxy.sol/MarketProxy.json'
@@ -112,7 +112,7 @@ const init = async (): Promise<markets> => {
 	}
 }
 
-const init2 = async (): Promise<[markets, Contract]> => {
+const init2 = async (): Promise<[markets, MockContract]> => {
 	const markets = await init()
 	const signers = await getSigners()
 	await markets.deployer.setAssociatedMarket(signers.associatedMarket.address)
