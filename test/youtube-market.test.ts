@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import { expect, use } from 'chai'
 import { Contract } from 'ethers'

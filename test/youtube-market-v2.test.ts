@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
 /* eslint-disable new-cap */
 /* eslint-disable no-await-in-loop */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import { expect, use } from 'chai'
 import { ethers, waffle } from 'hardhat'
@@ -127,7 +128,7 @@ const init3 = async (): Promise<[Markets, string, string]> => {
 	const key = ethers.utils.keccak256(
 		ethers.utils.toUtf8Bytes('user/repository')
 	)
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
 	await associatedMarket.mock.authenticatedCallback
 		.withArgs(property.address, key)
 		.returns(metrics.address)
