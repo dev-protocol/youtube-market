@@ -9,7 +9,7 @@ import { solidity } from 'ethereum-waffle'
 import YouTubeMarketV2Artifact from '../artifacts/contracts/YouTubeMarketV2.sol/YouTubeMarketV2.json'
 import MarketAdminArtifact from '../artifacts/contracts/MarketAdmin.sol/MarketAdmin.json'
 import MarketProxyArtifact from '../artifacts/contracts/MarketProxy.sol/MarketProxy.json'
-import { YouTubeMarketV2, MarketAdmin, MarketProxy } from '../typechain'
+import { YouTubeMarketV2, MarketAdmin, MarketProxy } from '../typechain-types'
 
 use(solidity)
 
