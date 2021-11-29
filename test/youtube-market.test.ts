@@ -10,7 +10,7 @@ import { MockContract, solidity } from 'ethereum-waffle'
 import YouTubeMarketArtifact from '../artifacts/contracts/YouTubeMarket.sol/YouTubeMarket.json'
 import MarketAdminArtifact from '../artifacts/contracts/MarketAdmin.sol/MarketAdmin.json'
 import MarketProxyArtifact from '../artifacts/contracts/MarketProxy.sol/MarketProxy.json'
-import { YouTubeMarket, MarketAdmin, MarketProxy } from '../typechain'
+import { YouTubeMarket, MarketAdmin, MarketProxy } from '../typechain-types'
 
 use(solidity)
 
