@@ -44,7 +44,7 @@
     "@openzeppelin/contracts" "4.3.2"
     "@openzeppelin/contracts-upgradeable" "4.3.2"
 
-"@devprotocol/protocol@^3.4.0":
+"@devprotocol/protocol@3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@devprotocol/protocol/-/protocol-3.4.0.tgz#df746e7b82d1aed18d51b146fea62b50e1a6bbc8"
   integrity sha512-LRQrpT078PavgqxD584QWpALCr9BgX1abttGTOe0gUZsRnT5JSruxp6Bs4k5yfaAD3XRdkf/SR2+YLPwah0QYQ==
