@@ -28,8 +28,26 @@ const config: HardhatUserConfig = {
 				mnemonic: mnemnoc,
 			},
 		},
+		arbitrumOne: {
+			url: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_KEY!}`,
+			accounts: {
+				mnemonic: mnemnoc,
+			},
+		},
 		arbitrumRinkeby: {
 			url: `https://arbitrum-rinkeby.infura.io/v3/${process.env.INFURA_KEY!}`,
+			accounts: {
+				mnemonic: mnemnoc,
+			},
+		},
+		polygonMainnet: {
+			url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_KEY!}`,
+			accounts: {
+				mnemonic: mnemnoc,
+			},
+		},
+		polygonMumbai: {
+			url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_KEY!}`,
 			accounts: {
 				mnemonic: mnemnoc,
 			},
