@@ -31,5 +31,5 @@ module.exports = [
 2. Run hardhat-etherscan
 
 ```bash
-yarn hardhat verify --network <NETWORK_NAME> <CONTRACT_ADDRESS>  --constructor-args ./scripts/arguments.js
+yarn hardhat verify --network <NETWORK_NAME> <CONTRACT_ADDRESS> --contract <PATH_TO_CONTRACT>:<CONTRACT_NAME> --constructor-args ./scripts/arguments.js
 ```
