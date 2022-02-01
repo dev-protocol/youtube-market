@@ -2,6 +2,7 @@
 import '@typechain/hardhat'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
+import '@nomiclabs/hardhat-etherscan'
 import { HardhatUserConfig } from 'hardhat/config'
 import * as dotenv from 'dotenv'
 
@@ -51,6 +52,15 @@ const config: HardhatUserConfig = {
 			accounts: {
 				mnemonic: mnemnoc,
 			},
+		},
+	},
+	etherscan: {
+		apiKey: {
+			ropsten: process.env.ETHERSCAN_ROPSTEN_KEY,
+			arbitrumOne: process.env.ARBISCAN_KEY,
+			arbitrumTestnet: process.env.ARBISCAN_RINKEBY_KEY,
+			polygon: process.env.POLYGONSCAN_KEY,
+			polygonMumbai: process.env.POLYGONSCAN_MUMBAI_KEY,
 		},
 	},
 }
