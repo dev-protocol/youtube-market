@@ -2,6 +2,7 @@
 import '@typechain/hardhat'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
+import '@nomiclabs/hardhat-etherscan'
 import { HardhatUserConfig } from 'hardhat/config'
 import * as dotenv from 'dotenv'
 
@@ -21,9 +22,8 @@ const config: HardhatUserConfig = {
 		},
 	},
 	networks: {
-		ropsten: {
-			url: `https://ropsten.infura.io/v3/${process.env.INFURA_KEY!}`,
-			gas: 4712388,
+		mainnet: {
+			url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY!}`,
 			accounts: {
 				mnemonic: mnemnoc,
 			},
@@ -51,6 +51,15 @@ const config: HardhatUserConfig = {
 			accounts: {
 				mnemonic: mnemnoc,
 			},
+		},
+	},
+	etherscan: {
+		apiKey: {
+			mainnet: process.env.ETHERSCAN_KEY,
+			arbitrumOne: process.env.ARBISCAN_KEY,
+			arbitrumTestnet: process.env.ARBISCAN_RINKEBY_KEY,
+			polygon: process.env.POLYGONSCAN_KEY,
+			polygonMumbai: process.env.POLYGONSCAN_MUMBAI_KEY,
 		},
 	},
 }
