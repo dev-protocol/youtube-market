@@ -1566,10 +1566,10 @@
   dependencies:
     ethers "^5.0.2"
 
-"@typechain/hardhat@6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@typechain/hardhat/-/hardhat-6.1.0.tgz#248e6512e9ef192499729dd90071ca0d77ea714a"
-  integrity sha512-JoqQTLlVuAWdnIjyw5CVQ6hmZjtvckDtwCyx01suCcPPTYHKDgUYToVmsPnhoCX50oBe+yDmFyzJcKRUagUwvg==
+"@typechain/hardhat@6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@typechain/hardhat/-/hardhat-6.1.1.tgz#5f93817b981fc6697550d4caff2333f05cd7aad2"
+  integrity sha512-jmVWfxeM64QhFMxPyAYdUZFE6kVFB4KpSJ6MHKqW3BPWFhNpGAOOyNjbz7RjFofIx/ix44gYqRk2d+gflGngKw==
   dependencies:
     fs-extra "^9.1.0"
     lodash "^4.17.15"
